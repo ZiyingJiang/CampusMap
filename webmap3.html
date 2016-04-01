@@ -1,0 +1,447 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Miami University Middletown Campus</title>
+    <!--<meta http-equiv="Content-Language" content="en-us" /> --> 
+    <meta name="keywords" content="Miami University, Campus map, Regional, Middletown" />
+	<meta name="description" content="Miami University Middletown Campus Map" />
+	<!--use different stylesheet in various size of viewport. need revise later -->
+	<link rel="stylesheet" type="text/css" href="main.css" media="screen,projection" />
+	<link rel="stylesheet" type="text/css" href="layout_pc.css" media="screen and (min-width: 769px)" />
+	<link rel="stylesheet" type="text/css" media="screen and (min-width: 0px) and (max-width:480px)" href="layout_mobile.css" /> 
+	<link rel="stylesheet" type="text/css" media="screen and (min-width: 481px) and (max-width:768px)" href="layout_tablet.css" />
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+	<!-- Include meta tag to ensure proper rendering and touch zooming -->
+
+
+	<!--external stylesheet, may use in future 
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css" type="text/css" />
+	<link rel="stylesheet" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/css" media="all" />
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5.0/dojo/resources/dojo.css" type="text/css" media="all" />
+	<link rel="stylesheet" src="//ajax.googleapis.com/ajax/libs/dojo/1.5.0/dijit/themes/claro/claro.css" type="text/css" media="all" />
+	<link rel="stylesheet" src="//ajax.googleapis.com/ajax/libs/dojo/1.5.0/dijit/themes/tundra/tundra.css" type="text/css" media="all" />-->
+	
+	<!--call GoogleMap API -->
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA79T28GLr_8Asb_E8BlDmRpWQnMT-PAro&sensor=false"></script>
+	<!--Load jquery library for functions and user interface-->
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+	<!-- Include jQuery Mobile stylesheets 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">-->
+	
+	<!-- Include the jQuery library 
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>-->
+	
+	<!-- Include the jQuery Mobile library 
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
+	<script type="text/javascript">
+	var map;
+	var Mcenter = new google.maps.LatLng(39.5242,-84.3572/*39.3770,-84.5630*/);
+	var Qcenter= new google.maps.LatLng();
+	var infowindow = new google.maps.InfoWindow();
+	var MyLoc= []; //declare my location as a global variable
+	var gicons = [];  //google icons
+	gicons["red"] = new google.maps.MarkerImage("mapIcons/marker_red.png");
+	
+	gicons["yellow"] = new google.maps.MarkerImage("mapIcons/marker_yellow.png",
+      // This marker is 20 pixels wide by 34 pixels tall.
+      new google.maps.Size(20, 34),
+      // The origin for this image is 0,0.
+      new google.maps.Point(0,0),
+      // The anchor for this image is at 9,34.
+      new google.maps.Point(9, 34));
+	  
+	/*function getMarkerImage(iconColor) {
+	   if ((typeof(iconColor)=="undefined") || (iconColor==null)) { 
+		  iconColor = "red"; 
+	   }
+	   if (!gicons[iconColor]) {
+		  gicons[iconColor] = new google.maps.MarkerImage("mapIcons/marker_"+ iconColor +".png",
+		  // This marker is 20 pixels wide by 34 pixels tall.
+		  new google.maps.Size(20, 34),
+		  // The origin for this image is 0,0.
+		  new google.maps.Point(0,0),
+		  // The anchor for this image is at 6,20.
+		  new google.maps.Point(9, 34));
+	   } 
+	   return gicons[iconColor];
+}
+	gicons["blue"] = getMarkerImage("blue");
+    gicons["green"] = getMarkerImage("green");*/
+
+	//google.load('visualization', '1', {});
+	
+	//make feature stylization a global function, as it will be called later when user click the legend
+	//the polygon/line color and width is determined by the 'properties' in the GeoJSON data 
+	function StyleFeature(feature) {
+		//if (feature.getGeometry().getType() ==='MultiPoint') {
+		if (feature.getGeometry().getType() ==='Point') {
+			fill_color=feature.getProperty('fillcolor');
+			stroke_weight = 1
+		}		
+		//if (feature.getGeometry().getType() === 'MultiPolygon'){
+		if (feature.getGeometry().getType() ==='Polygon') {
+			fill_color = feature.getProperty('fillcolor');
+			line_color = '#bebebe';//feature.getProperty('bordercolo');
+			stroke_weight = 1	//feature.getProperty('bordwidth') //the problem is that borderwith is used in parking while bordwidth is used in building
+		}
+		//if (feature.getGeometry().getType() === 'MultiLineString') {
+		if (feature.getGeometry().getType() ==='LineString') {
+			line_color = '#fffafa';//feature.getProperty('linecolor');
+			stroke_weight = 4;//feature.getProperty('linewidth')
+		}
+		var show= feature.getProperty('Display'); //the Display toggle the visibility of features. It is changed when user click the legend box.
+		return /** @type {google.maps.Data.StyleOptions}*/ {
+			icon: {
+					path: google.maps.SymbolPath.CIRCLE,
+					scale: 4,
+					fillColor:fill_color,
+					fillOpacity:1,
+					strokeWeight: stroke_weight,					  
+					},
+			//geometry.symbol:symbol,
+			fillColor:fill_color,//feature.getProperty('fillcolor'),
+			fillOpacity:0.6,
+			strokeColor: line_color,
+			strokeWeight: stroke_weight,
+			visible: show
+		};
+	}
+	function initialize()
+	{
+		//base map style: remove the building and local roads, give lighter color of campus
+		var style=[
+		  {
+			"featureType": "road",
+			"elementType": "geometry",
+			"stylers": [
+			  { "visibility": "off" }
+			]
+		  },{
+			"elementType": "labels",
+			"stylers": [
+			  { "visibility": "off" }
+			]
+		  },{
+			"featureType": "landscape.man_made",
+			"elementType": "geometry.fill",
+			"stylers": [
+			  { "visibility": "off" }
+			]
+		  },{
+			"featureType": "poi.park",
+			"elementType": "labels",
+			"stylers": [
+			  { "visibility": "simplified" }
+			]
+		  },{
+			"featureType": "road.arterial",
+			"elementType": "geometry",
+			"stylers": [
+			  { "visibility": "simplified" }
+			]
+		  },{
+			"featureType": "road.arterial",
+			"elementType": "labels.text",
+			"stylers": [
+			  { "visibility": "simplified" }
+			]
+		  },{
+			"featureType": "road.local",
+			"elementType": "geometry",
+			"stylers": [
+			  { "visibility": "simplified" }
+			]
+		  },{
+			"featureType": "road.local",
+			"elementType": "labels",
+			"stylers": [
+			  { "visibility": "simplified" }
+			]
+		  },{
+			"featureType": "poi.school",
+			"stylers": [
+			  { "color": "#cddfad" }
+			]
+		  }
+		]
+		//var styledMap = new google.maps.StyledMapType(styles,{name: "Styled Map"});
+		//define the center, zoom level, and other option of base map
+		var myOptions = {
+	        center: new google.maps.LatLng(39.5242,-84.3572/*39.3770,-84.5630*/),
+			zoom: 17, 
+	        panControl: false,
+	        streetViewControl: false,
+	        mapTypeControl:false,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP,
+			};
+ 	    
+		//create a new google map in the map_canvas division on the webpage
+	    map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+		map.setOptions({styles: style});
+		
+		// Load GeoJSON data
+		map.data.loadGeoJson('map8.geojson'/*,{ idPropertyName: 'Name' }*/);
+		//add more GeoJSON data. reserve the code below for future use
+		//map.data.addGeoJson(...);
+
+		// set the style by calling the StyleFeature function defined early
+		map.data.setStyle(StyleFeature);  
+		// Style can also be set as below. But it is static, so we don't use this way 
+		/*var DefaultStyle = {
+			fillColor: 'green',
+			strokeColor: 'red',
+			strokeWeight: 1,
+			visible:true,
+			}
+		map.data.setStyle(DefaultStyle);*/	
+	
+		// Load the properties of features when user click the feature on map
+		// by creating a listener on map.data so the map.data respond to click by running the function(event)
+		map.data.addListener('click', function(event) {
+			var output= "";  //the html code that display the properties
+			switch (event.feature.getProperty('Type')){
+				case "Building":
+					output= "<p2>" + event.feature.getProperty('Title') + "</p2>";				
+					if (event.feature.getProperty('pic_url')){
+						output=output+ "<img src='" + event.feature.getProperty('pic_url')+"' alt='Photo' width='200'>"
+					};
+					output= output+ "<p>" + event.feature.getProperty('descriptio') + "</p>";
+					if (event.feature.getProperty('WebSite')){
+						output=output+ "<a href='" + event.feature.getProperty('WebSite')+ "'target='_blank'>Click here</a><br>"
+					};
+					if (event.feature.getProperty('phone_numb')){
+						output=output+ "<p>Phone: " + event.feature.getProperty('phone_numb') + "</p>";
+					};
+					break;
+				case "Parking":
+					output= "<p2>"+ event.feature.getProperty('Type') +"</p2>";
+					output= output+"<p>Number of spot: "+ event.feature.getProperty('Number_Spo')+"</p>";
+					output= output+"<p>Staff parking: "+ event.feature.getProperty('Staff_Park')+"</p>";
+					output= output+"<p>Visitor parking: "+ event.feature.getProperty('Number_Vis')+"</p>";
+					output= output+"<p>Handicap access: "+ event.feature.getProperty('HNDC_ACCES')+"</p>";
+					break;
+				case "Sidewalks":
+					output= "<p2>"+ event.feature.getProperty('Type') +"</p2>";
+					output= output+"<p>Handicap access: "+ event.feature.getProperty('HNDC_ACCES')+"</p>";
+					break;
+				case "Security":
+					output= "<p2>" + event.feature.getProperty('Title') + "</p2>";				
+					if (event.feature.getProperty('pic_url')){
+						output=output+ "<img src='" + event.feature.getProperty('pic_url')+"' alt='Photo' width='200'>"
+					};
+					output= output+ "<p>" + event.feature.getProperty('descriptio') + "</p>";
+					if (event.feature.getProperty('WebSite')){
+						output=output+ "<a href='" + event.feature.getProperty('WebSite')+ "'target='_blank'>Click here</a><br>"
+					};
+					if (event.feature.getProperty('phone_numb')){
+						output=output+ "<p>Phone: " + event.feature.getProperty('phone_numb') + "</p>";
+					};
+					break;
+				default: //case "Office":
+					output= "<p2>" + event.feature.getProperty('Title') + "</p2>";				
+					if (event.feature.getProperty('pic_url')){
+						output=output+ "<img src='" + event.feature.getProperty('pic_url')+"' alt='Photo' width='200'>"
+					};
+					if (event.feature.getProperty('descriptio')){
+						output= output+ "<p>" + event.feature.getProperty('descriptio') + "</p>";
+					};
+					if (event.feature.getProperty('WebSite')){
+						output=output+ "<a href='" + event.feature.getProperty('WebSite')+ "'target='_blank'>Click here</a><br>"
+					};
+					if (event.feature.getProperty('phone_numb')){
+						output=output+ "<p>Phone: " + event.feature.getProperty('phone_numb') + "</p>";
+					};
+					//break;
+				//more cases will need to be added later
+				}
+			document.getElementById('info-box').innerHTML = output; //display the html code in the info-box 
+		});
+
+		// When the user hovers, tempt them to click by changing the style of the feature
+		// override the existing style with new fill and stroke settings 
+		// Also if mouse hovers on building, display building's name in the search box
+		map.data.addListener('mouseover', function(event) {
+			//if (event.feature.getGeometry().getType()!='MultiLineString'){
+				document.getElementById('float-label').style.visibility = "visible";
+				if(event.feature.getProperty('Type')=='Building'){
+					document.getElementById('feature-label').innerHTML = event.feature.getProperty('Title') 
+				}
+				else if(event.feature.getProperty('Type')=='Parking'){
+					document.getElementById('feature-label').innerHTML = 'Parking lot'; 
+				}
+				else if (event.feature.getGeometry().getType()=='MultiLineString'){
+					document.getElementById('feature-label').innerHTML = event.feature.getProperty('Type'); 
+				}
+				else{
+					document.getElementById('feature-label').innerHTML = event.feature.getProperty('Title') 
+				};
+				map.data.overrideStyle(event.feature, {
+					icon: {				
+						path: google.maps.SymbolPath.CIRCLE,
+						scale: 8,
+						fillColor:'purple',
+						fillOpacity:1,
+						strokeColor:'purple',
+						strokeWeight: 3
+						},
+					fillColor:'yellow', 
+					fillOpacity: 0.8,
+					strokeColor:'yellow',
+					strokeWeight: 3
+					})
+			//}
+		});
+
+		// when the mouse leave the feature, call revertStyle() to remove all overrides. 
+		// also restore the 'Search map' in the search box
+		map.data.addListener('mouseout', function(event) {
+			map.data.revertStyle();
+			document.getElementById('float-label').style.visibility = "hidden";
+			//document.getElementById('txtKeyword').value ='Search map';		
+		});
+		google.maps.event.addListener(map, 'click', function() { 
+    			infowindow.close();
+		});
+		//Autocomplete the search, not working now, need to change 
+		/*AutoComplete();*/
+		
+	}
+	
+	//execute the function of initialize after the window is loaded 
+	google.maps.event.addDomListener(window, 'load', initialize);
+
+	</script>
+</head>
+<body>
+	<div class="page" >
+    	<a href="#" class="back-to-top" title="Back to top"><img src="arrow-34.png" alt="back to top"></a>
+		<div class='header'>
+    		<h1>Middletown</h1>
+		</div>
+		<div class="main-content">
+			<div class="info-panel">
+				<div id="info-box">
+					<h2>50th Anniversary of Miami University Middletown Groundbreaking</h2>
+					<!--<div class=pic-group>
+						<img src='images/Groundbreaking2.jpg' width='350'  height='100'  alt="There are three images.Picture 1: William Donham of the City Commission delivers the welcome address.
+						Picture 2: Ohio Governor James Rhodes joins City and Miami officials in turning the first shovelfuls of dirt.Picture 3: another view of the ceremonial first shovel.">
+					</div>-->				
+					<p>Since February 1959, Miami had offered classes in Middletown, creating an Academic Center that used high school classrooms in the late afternoons, evenings, and on weekends.	By 1963 there were over 700 enrolled in 57 classes, with plans for offering 75 classes in 1964.</br>
+The growing number of students in the Middletown City Schools put classroom space at a premium.For two years a local committee had worked in the community and with Miami to help secure the necessary funding for the new campus. Armco donated 135 acres to Miami, with additional land and the Holiday House donated by the
+Armco Girl’s Foundation, to set the site for the new campus. McGraw Construction of Middletown donated the engineering feasibility study, with additional support from Middletown’s Barnitz Fund for the preliminary drawings of the new campus.</br>
+Wednesday, January 28, 1965, people gathered at Holiday House on the campus site to break ground for the new campus. Logan T. Johnston, who was chairing the local efforts working with the Chamber of Commerce, spoke of “The Middletown Dream.” Acting Miami President Dr. Raymond Wilson shared Miami’s thanks, and then, on behalf
+of Miami’s Trustees, announced that the first classroom building on the campus would be named for Johnston.</br></p>
+					
+					<!--removed, designed for expand/collapse to show full story
+					<p><a href="#" id="story" onclick="ExpandCollape('story');return false;">Read more...</a></p>
+					-->
+				</div>
+			</div>
+			<div class="description" >
+				
+				<div id="map_canvas" >		
+				</div>
+				<div id= "float-label" style="visibility:hidden;"><span id="feature-label" ></div>
+				<div id="credit">
+					<p1>Map is created by Ziying Jiang, Aaron Smigielski, Garry Green, Brandon Bruns and Farnaz Pakdel.</p1> 
+				</div>
+				<div id="HelpTab"> 
+					<p class='tab'><a href="#" id="help-show" class="showLink" onclick="showHide('help');return false;">Show help</a></p>
+					<p class='tab'><a href="#" id="help-hide" class="hideLink" onclick="showHide('help');return false;" style="display:none">Hide help</a></p>
+					<div id="help" >
+						<fieldset >
+							<legend><p> Instruction</p></legend>
+							<ul>
+								<li>Zoom in and out with scrollbar on the left</li>
+								<li>Toggle basemaps with 'Map' and 'Satellite' buttons</li>
+								<li>Search for features with the 'Search the map...' search bar</li>
+								<li>Click checkboxes above to display groups of features</li>
+								<li>Click on any feature to display additional information</li>
+							</ul>
+						</fieldset>
+					</div>
+				</div>				
+				
+				<div class="buttongroup">
+					<!--<button id="btnRoadMap" title="toggle base maps" onclick="btnRoadMap_OnClick()">Map</button>
+					<button id="btnSateMap" title="toggle base maps" onclick="btnSateMap_OnClick()">Satellite</button>
+					 merge two button for mobile device layout-->
+					<button id="btnMyLocation" title="toggole map center" onclick="btnMyLocation_OnClick()">My location</button>
+					<button id="btnBaseMap" title="toggle base maps" onclick="btnBaseMap_OnClick()">Satellite</button>
+					<!-- legend list for mobile device layout only--> 
+					<div class="dropdownlist">
+						<select id="legendlist2" multiple='multiple' onchange="DisplayFeatures2()">
+							<option value="ALL" >Display All</option>
+							<option value="Accessibility">Accessibility</option>
+							<option Value="Amenities" >Amenity</option>
+							<option value="Office" >Office</option>
+							<option value="Point of interest">Point of interest</option>
+							<option value="Recreation">Recreation</option>
+							<option Value="Security" >Security</option>
+							<option value="Student services" >Student service</option>
+							<option value="Sidewalks">Side walk</option>
+							
+							<option Value="Building" >Building</option>
+							<option value="Parking" >Parking</option>
+						</select>
+						<!--<div id="selectlist">
+							<input type="checkbox" name="legendlist" id="ALL" value="ALL" onclick="DisplayAllFeatures()" checked><label for='ALL'> All</label><br>
+							<input type="checkbox" name="legendlist" id="Accessibility" value="Accessibility" onclick="DisplayFeatures()" ><label for='Accessibility'> Accessibility</label><br> 
+							<input type="checkbox" name="legendlist" id="Amenities" value="Amenities" onclick="DisplayFeatures()" ><label for='Amenities'> Amenity</label><br> 
+							<input type="checkbox" name="legendlist" id="Office" value="Office" onclick="DisplayFeatures()"  ><label for="Office"> Office</label><br>  
+							<input type="checkbox" name="legendlist" id="POI" value="Point of interest" onclick="DisplayFeatures()" ><label for="POI"> Point of interest</label><br>
+							<input type="checkbox" name="legendlist" id="Recreation" value="Recreation" onclick="DisplayFeatures()" ><label for="Recreation"> Recreation</label><br>
+							<input type="checkbox" name="legendlist" id="Security" value="Security" onclick="DisplayFeatures()" ><label for="Security">  Security</label><br>
+							<input type="checkbox" name="legendlist" id="SServices" value="Student services" onclick="DisplayFeatures()" ><label for="SServices">  Student service</label><br>
+							<input type="checkbox" name="legendlist" id="Sidewalks" value="Sidewalks" onclick="DisplayFeatures()" ><label for="Sidewalks">  Side walk</label><br>
+							<input type="checkbox" name="legendlist" id="Building" value="Building" onclick="DisplayFeatures()" ><label for="Building">  Building</label><br> 									
+							<input type="checkbox" name="legendlist" id="Parking" value="Parking" onclick="DisplayFeatures()" ><label for="Parking">  Parking</label><br> 				
+						</div>-->
+					</div>				
+					<input type="text" id="txtKeyword" value="Search the map..." onfocus="if (this.value == 'Search the map...') {this.value = '';}"
+						   size="20" onkeydown="if (event.keyCode == 13) document.getElementById('btnQuery').click()">
+					<button id="btnQuery" title="Search" onclick="btnQuery_OnClick()" >Go</button>
+					<!--<button id="btnInstr" title="Instruction" onclick="btnInstr_OnClick()" >Show help</button>-->
+				</div>
+				<div class="content-pane">
+				<!-- legend list for pc and tablet layout--> 
+				<!-- <div class="content-title"><p> Displayed festures</p></div>-->
+					<fieldset>
+						<legend><div class="content-title"><h2> Displayed festures</h2></div></legend>
+						<div class="checkboxOne">
+							<input type="checkbox" name="legendlist" id="ALL" value="ALL" onclick="DisplayAllFeatures()" checked><label for='ALL'> All</label><br>
+							<input type="checkbox" name="legendlist" id="Accessibility" value="Accessibility" onclick="DisplayFeatures()" ><div class="circle blue"></div><label for='Accessibility'> Accessibility</label><br> 
+							<input type="checkbox" name="legendlist" id="Amenities" value="Amenities" onclick="DisplayFeatures()" ><div class="circle yellow"></div><label for='Amenities'> Amenity</label><br> 
+							<input type="checkbox" name="legendlist" id="Office" value="Office" onclick="DisplayFeatures()"  ><div class="circle brown"></div><label for="Office"> Office</label><br>  
+							<input type="checkbox" name="legendlist" id="POI" value="Point of interest" onclick="DisplayFeatures()" ><div class="circle aqua"></div><label for="POI"> Point of interest</label><br>
+							<input type="checkbox" name="legendlist" id="Recreation" value="Recreation" onclick="DisplayFeatures()" ><div class="circle pink"></div><label for="Recreation"> Recreation</label><br>
+							<input type="checkbox" name="legendlist" id="Security" value="Security" onclick="DisplayFeatures()" ><div class="circle red"></div><label for="Security">  Security</label><br>
+							<input type="checkbox" name="legendlist" id="SServices" value="Student services" onclick="DisplayFeatures()" ><div class="circle green"></div><label for="SServices">  Student service</label><br>
+							<input type="checkbox" name="legendlist" id="Sidewalks" value="Sidewalks" onclick="DisplayFeatures()" ><div class="line white"></div><label for="Sidewalks">  Side walk</label><br>
+							<!--<input type="checkbox" name="legendlist" id="CampusRoads" value="Campus roads" onclick="DisplayFeatures()" ><div class="line white2"></div><label for="CampusRoads">  Campus road</label><br>-->
+							<input type="checkbox" name="legendlist" id="Building" value="Building" onclick="DisplayFeatures()" ><div class="rectangle building"></div><label for="Building">  Building</label><br> 									
+							<input type="checkbox" name="legendlist" id="Parking" value="Parking" onclick="DisplayFeatures()" ><div class="rectangle parking"></div><label for="Parking">  Parking</label><br> 				
+						</div>
+					</fieldset>
+				</div>
+	
+			
+			</div>
+		</div>
+
+		<div class='foot-nav'> 
+	        <a href="http://www.regionals.miamioh.edu/maps/campus-maps.htm">Back</a>
+			<a href="http://www.regionals.miamioh.edu/">Home</a>
+			<a href="mailto:MumOHGIS@gmail.com?Subject=Web map comments" target="_top">Questions and comments</a><br>
+			  <p>Miami University-Middletown, 4200 N University Blvd., Middletown, OH 45042<BR>
+	          Phone: 513.727.3200 or 1.86.MIAMI.MID (toll free)<br></p>  
+		</div>
+	</div> 
+	<script type="text/javascript" src='webmap3.js'></script>
+</body>
+</html>
