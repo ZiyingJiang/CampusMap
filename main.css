@@ -5,13 +5,17 @@ body{
 	margin: 0 auto;
 	line-height: 1.5em;
 	font-size: 14px;
+	background: #990000;
 }
 .page{
 	margin:0 auto;
 	position: relative;	
 }
-
 p{margin: 0em 0em .75em 0em;}
+p2{
+	font-size:1.3em;
+	font-weight:bold;
+}
 
 .header{margin: 0; padding: 0; background:#FFFFFF;}
 .header h1{ 	
@@ -26,51 +30,39 @@ p{margin: 0em 0em .75em 0em;}
 }
 .info-panel{
 	float: left;
-	background:#EDECE6;
-	display: block;
+	background:#FFFFCC;/*#EDECE6;*/
+	/*background-color:rgba(219,200,200, 0.9);*/
 	margin:0px;
 	padding: 0px;
 }
+#info-box{}
+
 .description{
-	float:right;
 	background:#EDECE6;
 	display: block;
 	margin:0px;
-	
-}
-.float-label{
-	display: inline-block;
-	position: absolute;
-	width: auto;
 }
 #map_canvas{
 	margin: 0px 0px 0px 0px;
 	padding-right:  0px;
 }
-#credit{
-	display: inline-block;
-	position: absolute;
-	background:#EDECE6;
-	padding-bottom:5px;
-	padding-top: 5px;
+#float-label{
+	background-color:rgba(255,255,255, 0.8);
 }
-#credit p1{
-	font-size: 0.9em; 
-	
-	line-height: 1.0em;
-	font-family:open sans;	
+#credit{
+	background:#EDECE6;
 }
 
 /* size and position are set in layoutXX.css*/
+.buttongroup{ }
+
 .content-pane{
-	position: absolute;
 	background-color:rgba(219,200,200, 0.8);
 	-webkit--radius: 10px;
 	-moz--radius: 10px;
 	border-radius: 10px;
 	filter: dropshadow(color=#333, offx=5px, offy=5px);
 }
-
 fieldset {
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
@@ -79,12 +71,7 @@ fieldset {
 .content-pane fieldset {
 	border: none;
 }
-.content-title{
-	background-color: #990000;
-	-webkit--radius: 5px;
-	-moz--radius: 5px;
-	border-radius: 5px;
-}
+
 .content-pane h2 {	
 	color:#E1D8B9;
 	font-weight:bold;
@@ -122,16 +109,7 @@ fieldset {
 }
 .building {background: #FF8080;}
 .parking {background: #A3A3C2;}
-/*#instruction{
-	position: absolute;
-	background-color:rgba(219,200,200, 0.8);
-	-webkit--radius: 10px;
-	-moz--radius: 10px;
-	border-radius: 10px;
-	filter: dropshadow(color=#333, offx=5px, offy=5px);
-	box-shadow: 10px 10px 5px #888888;
-	
-}*/
+.pond{background: #4DB8D8;}
 ul{
 	list-style-position:outside;
 	margin-left: -2em;
@@ -173,4 +151,5 @@ a.hideLink {
 }
 
 /*leave that for future effect*/
+
 

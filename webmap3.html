@@ -4,15 +4,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Miami University Middletown Campus</title>
-    <!--<meta http-equiv="Content-Language" content="en-us" />  
-    <meta name="keywords" content="" />-->
-	<meta name="description" content="" />
+    <!--<meta http-equiv="Content-Language" content="en-us" /> --> 
+    <meta name="keywords" content="Miami University, Campus map, Regional, Middletown" />
+	<meta name="description" content="Miami University Middletown Campus Map" />
 	<!--use different stylesheet in various size of viewport. need revise later -->
 	<link rel="stylesheet" type="text/css" href="main.css" media="screen,projection" />
-	<link rel="stylesheet" type="text/css" href="layout_pc.css" media="screen,projection" />
-	<link rel="stylesheet" type="text/css" media="screen and (min-width: 0px) and (max-width:480px)" href="layout_mobile.css" />
+	<link rel="stylesheet" type="text/css" href="layout_pc.css" media="screen and (min-width: 769px)" />
+	<link rel="stylesheet" type="text/css" media="screen and (min-width: 0px) and (max-width:480px)" href="layout_mobile.css" /> 
 	<link rel="stylesheet" type="text/css" media="screen and (min-width: 481px) and (max-width:768px)" href="layout_tablet.css" />
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+	<!-- Include meta tag to ensure proper rendering and touch zooming -->
+
+
 	<!--external stylesheet, may use in future 
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css" type="text/css" />
 	<link rel="stylesheet" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/css" media="all" />
@@ -27,12 +30,20 @@
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-
+	<!-- Include jQuery Mobile stylesheets 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">-->
+	
+	<!-- Include the jQuery library 
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>-->
+	
+	<!-- Include the jQuery Mobile library 
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
 	<script type="text/javascript">
 	var map;
 	var Mcenter = new google.maps.LatLng(39.5242,-84.3572/*39.3770,-84.5630*/);
 	var Qcenter= new google.maps.LatLng();
 	var infowindow = new google.maps.InfoWindow();
+	var MyLoc= []; //declare my location as a global variable
 	var gicons = [];  //google icons
 	gicons["red"] = new google.maps.MarkerImage("mapIcons/marker_red.png");
 	
@@ -195,7 +206,7 @@
 			var output= "";  //the html code that display the properties
 			switch (event.feature.getProperty('Type')){
 				case "Building":
-					output= "<h3>" + event.feature.getProperty('Title') + "</h3>";				
+					output= "<p2>" + event.feature.getProperty('Title') + "</p2>";				
 					if (event.feature.getProperty('pic_url')){
 						output=output+ "<img src='" + event.feature.getProperty('pic_url')+"' alt='Photo' width='200'>"
 					};
@@ -208,18 +219,18 @@
 					};
 					break;
 				case "Parking":
-					output= "<h3>"+ event.feature.getProperty('Type') +"</h3>";
+					output= "<p2>"+ event.feature.getProperty('Type') +"</p2>";
 					output= output+"<p>Number of spot: "+ event.feature.getProperty('Number_Spo')+"</p>";
 					output= output+"<p>Staff parking: "+ event.feature.getProperty('Staff_Park')+"</p>";
 					output= output+"<p>Visitor parking: "+ event.feature.getProperty('Number_Vis')+"</p>";
 					output= output+"<p>Handicap access: "+ event.feature.getProperty('HNDC_ACCES')+"</p>";
 					break;
 				case "Sidewalks":
-					output= "<h3>"+ event.feature.getProperty('Type') +"</h3>";
+					output= "<p2>"+ event.feature.getProperty('Type') +"</p2>";
 					output= output+"<p>Handicap access: "+ event.feature.getProperty('HNDC_ACCES')+"</p>";
 					break;
 				case "Security":
-					output= "<h3>" + event.feature.getProperty('Title') + "</h3>";				
+					output= "<p2>" + event.feature.getProperty('Title') + "</p2>";				
 					if (event.feature.getProperty('pic_url')){
 						output=output+ "<img src='" + event.feature.getProperty('pic_url')+"' alt='Photo' width='200'>"
 					};
@@ -232,7 +243,7 @@
 					};
 					break;
 				default: //case "Office":
-					output= "<h3>" + event.feature.getProperty('Title') + "</h3>";				
+					output= "<p2>" + event.feature.getProperty('Title') + "</p2>";				
 					if (event.feature.getProperty('pic_url')){
 						output=output+ "<img src='" + event.feature.getProperty('pic_url')+"' alt='Photo' width='200'>"
 					};
@@ -298,6 +309,7 @@
 		});
 		//Autocomplete the search, not working now, need to change 
 		/*AutoComplete();*/
+		
 	}
 	
 	//execute the function of initialize after the window is loaded 
@@ -307,29 +319,27 @@
 </head>
 <body>
 	<div class="page" >
-    	<div class='header'>
-    		<h1>Middletown Campus</h1>
+    	<a href="#" class="back-to-top" title="Back to top"><img src="arrow-34.png" alt="back to top"></a>
+		<div class='header'>
+    		<h1>Middletown</h1>
 		</div>
 		<div class="main-content">
 			<div class="info-panel">
 				<div id="info-box">
 					<h2>50th Anniversary of Miami University Middletown Groundbreaking</h2>
-					<div class=pic-group>
-						<img src='http://www.regionals.miamioh.edu//news/images/Groundbreaking2.jpg' width='350'  height='100'  alt="There are three images.
-						Picture 1: William Donham of the City Commission delivers the welcome address.
-						Picture 2: Ohio Governor James Rhodes joins City and Miami officials in turning the first shovelfuls of dirt.
-						Picture 3: another view of the ceremonial first shovel.">
-					</div>				
-					<p>Since February 1959, Miami had offered classes in Middletown, creating an Academic Center that used high school classrooms in the
-					late afternoons, evenings, and on weekends.	By 1963 there were over 700 enrolled in 57 classes, with plans for offering 75 classes in 1964.</br>
-The growing number of students in the Middletown City Schools put classroom space at a premium.For two years a local committee had worked in the community and
-with Miami to help secure the necessary funding for the new campus. Armco donated 135 acres to Miami, with additional land and the Holiday House donated by the
-Armco Girl’s Foundation, to set the site for the new campus. McGraw Construction of Middletown donated the engineering feasibility study, with additional support
-from Middletown’s Barnitz Fund for the preliminary drawings of the new campus.</br>
-Wednesday, January 28, 1965, people gathered at Holiday House on the campus site to break ground for the new campus. Logan T. Johnston, who was chairing the local
-efforts working with the Chamber of Commerce, spoke of “The Middletown Dream.” Acting Miami President Dr. Raymond Wilson shared Miami’s thanks, and then, on behalf
-of Miami’s Trustees, announced that the first classroom building on the campus would be named for Johnston.</br>
-					</p>				
+					<!--<div class=pic-group>
+						<img src='images/Groundbreaking2.jpg' width='350'  height='100'  alt="There are three images.Picture 1: William Donham of the City Commission delivers the welcome address.
+						Picture 2: Ohio Governor James Rhodes joins City and Miami officials in turning the first shovelfuls of dirt.Picture 3: another view of the ceremonial first shovel.">
+					</div>-->				
+					<p>Since February 1959, Miami had offered classes in Middletown, creating an Academic Center that used high school classrooms in the late afternoons, evenings, and on weekends.	By 1963 there were over 700 enrolled in 57 classes, with plans for offering 75 classes in 1964.</br>
+The growing number of students in the Middletown City Schools put classroom space at a premium.For two years a local committee had worked in the community and with Miami to help secure the necessary funding for the new campus. Armco donated 135 acres to Miami, with additional land and the Holiday House donated by the
+Armco Girl’s Foundation, to set the site for the new campus. McGraw Construction of Middletown donated the engineering feasibility study, with additional support from Middletown’s Barnitz Fund for the preliminary drawings of the new campus.</br>
+Wednesday, January 28, 1965, people gathered at Holiday House on the campus site to break ground for the new campus. Logan T. Johnston, who was chairing the local efforts working with the Chamber of Commerce, spoke of “The Middletown Dream.” Acting Miami President Dr. Raymond Wilson shared Miami’s thanks, and then, on behalf
+of Miami’s Trustees, announced that the first classroom building on the campus would be named for Johnston.</br></p>
+					
+					<!--removed, designed for expand/collapse to show full story
+					<p><a href="#" id="story" onclick="ExpandCollape('story');return false;">Read more...</a></p>
+					-->
 				</div>
 			</div>
 			<div class="description" >
@@ -338,8 +348,7 @@ of Miami’s Trustees, announced that the first classroom building on the campus
 				</div>
 				<div id= "float-label" style="visibility:hidden;"><span id="feature-label" ></div>
 				<div id="credit">
-					<p1>Map is created by Ziying Jiang, Aaron Smigielski, Garry Green, Brandon Bruns and Farnaz Pakdel.
-					<!--and is maintained by Ziying Jiang. <b> Garry Green</b>, <b> Brandon Brunos</b> and <b> Farnaz Pakdel</b>-->  </p1> 
+					<p1>Map is created by Ziying Jiang, Aaron Smigielski, Garry Green, Brandon Bruns and Farnaz Pakdel.</p1> 
 				</div>
 				<div id="HelpTab"> 
 					<p class='tab'><a href="#" id="help-show" class="showLink" onclick="showHide('help');return false;">Show help</a></p>
@@ -347,77 +356,82 @@ of Miami’s Trustees, announced that the first classroom building on the campus
 					<div id="help" >
 						<fieldset >
 							<legend><p> Instruction</p></legend>
-								<ul>
+							<ul>
 								<li>Zoom in and out with scrollbar on the left</li>
 								<li>Toggle basemaps with 'Map' and 'Satellite' buttons</li>
-								<li>Search for features with the 'Search Map' search bar</li>
+								<li>Search for features with the 'Search the map...' search bar</li>
 								<li>Click checkboxes above to display groups of features</li>
 								<li>Click on any feature to display additional information</li>
 							</ul>
 						</fieldset>
 					</div>
 				</div>				
-			</div>	
-			<div class="buttongroup">
-		  		<button id="btnRoadMap" title="toggle base maps" onclick="btnRoadMap_OnClick()">Map</button>
-		  		<button id="btnSateMap" title="toggle base maps" onclick="btnSateMap_OnClick()">Satellite</button>
-		  		<!-- merge two button for mobile device layout-->
-		  		<button id="btnBaseMap" title="toggle base maps" onclick="btnBaseMap_OnClick()">Satellite</button>
-				<!-- legend list for mobile device layout only--> 
-				<div class="dropdownlist">
-					<select id="legendlist2" onchange="DisplayFeatures2()">
-						<option value="ALL" selected>Display All</option>
-						<option value="Accessibility">Accessibility</option>
-						<option Value="Amenities" >Amenity</option>
-						<option value="Office" >Office</option>
-						<option value="Point of interest">Point of interest</option>
-						<option value="Recreation">Recreation</option>
-						<option Value="Security" >Security</option>
-						<option value="Student services" >Student service</option>
-						<option value="Sidewalks">Side walk</option>
-						<!--<option value="Campus roads">Campus road</option>-->
-						<option Value="Building" >Building</option>
-						<option value="Parking" >Parking</option>
-					</select>
-				</div>				
-				<input type="text" id="txtKeyword" value="Search Map" onfocus="if (this.value == 'Search Map') {this.value = '';}" size="20" >
-				<button id="btnQuery" title="Search" onclick="btnQuery_OnClick()" >Go</button>
-				<!--<button id="btnInstr" title="Instruction" onclick="btnInstr_OnClick()" >Show help</button>-->
-			</div>
-
-			<div class="content-pane">
+				
+				<div class="buttongroup">
+					<!--<button id="btnRoadMap" title="toggle base maps" onclick="btnRoadMap_OnClick()">Map</button>
+					<button id="btnSateMap" title="toggle base maps" onclick="btnSateMap_OnClick()">Satellite</button>
+					 merge two button for mobile device layout-->
+					<button id="btnMyLocation" title="toggole map center" onclick="btnMyLocation_OnClick()">My location</button>
+					<button id="btnBaseMap" title="toggle base maps" onclick="btnBaseMap_OnClick()">Satellite</button>
+					<!-- legend list for mobile device layout only--> 
+					<div class="dropdownlist">
+						<select id="legendlist2" multiple='multiple' onchange="DisplayFeatures2()">
+							<option value="ALL" >Display All</option>
+							<option value="Accessibility">Accessibility</option>
+							<option Value="Amenities" >Amenity</option>
+							<option value="Office" >Office</option>
+							<option value="Point of interest">Point of interest</option>
+							<option value="Recreation">Recreation</option>
+							<option Value="Security" >Security</option>
+							<option value="Student services" >Student service</option>
+							<option value="Sidewalks">Side walk</option>
+							
+							<option Value="Building" >Building</option>
+							<option value="Parking" >Parking</option>
+						</select>
+						<!--<div id="selectlist">
+							<input type="checkbox" name="legendlist" id="ALL" value="ALL" onclick="DisplayAllFeatures()" checked><label for='ALL'> All</label><br>
+							<input type="checkbox" name="legendlist" id="Accessibility" value="Accessibility" onclick="DisplayFeatures()" ><label for='Accessibility'> Accessibility</label><br> 
+							<input type="checkbox" name="legendlist" id="Amenities" value="Amenities" onclick="DisplayFeatures()" ><label for='Amenities'> Amenity</label><br> 
+							<input type="checkbox" name="legendlist" id="Office" value="Office" onclick="DisplayFeatures()"  ><label for="Office"> Office</label><br>  
+							<input type="checkbox" name="legendlist" id="POI" value="Point of interest" onclick="DisplayFeatures()" ><label for="POI"> Point of interest</label><br>
+							<input type="checkbox" name="legendlist" id="Recreation" value="Recreation" onclick="DisplayFeatures()" ><label for="Recreation"> Recreation</label><br>
+							<input type="checkbox" name="legendlist" id="Security" value="Security" onclick="DisplayFeatures()" ><label for="Security">  Security</label><br>
+							<input type="checkbox" name="legendlist" id="SServices" value="Student services" onclick="DisplayFeatures()" ><label for="SServices">  Student service</label><br>
+							<input type="checkbox" name="legendlist" id="Sidewalks" value="Sidewalks" onclick="DisplayFeatures()" ><label for="Sidewalks">  Side walk</label><br>
+							<input type="checkbox" name="legendlist" id="Building" value="Building" onclick="DisplayFeatures()" ><label for="Building">  Building</label><br> 									
+							<input type="checkbox" name="legendlist" id="Parking" value="Parking" onclick="DisplayFeatures()" ><label for="Parking">  Parking</label><br> 				
+						</div>-->
+					</div>				
+					<input type="text" id="txtKeyword" value="Search the map..." onfocus="if (this.value == 'Search the map...') {this.value = '';}"
+						   size="20" onkeydown="if (event.keyCode == 13) document.getElementById('btnQuery').click()">
+					<button id="btnQuery" title="Search" onclick="btnQuery_OnClick()" >Go</button>
+					<!--<button id="btnInstr" title="Instruction" onclick="btnInstr_OnClick()" >Show help</button>-->
+				</div>
+				<div class="content-pane">
 				<!-- legend list for pc and tablet layout--> 
 				<!-- <div class="content-title"><p> Displayed festures</p></div>-->
-				<fieldset>
-					<legend><div class="content-title"><h2> Displayed festures</h2></div></legend>
-					<div class="checkboxOne">
-						<input type="checkbox" name="legendlist" id="ALL" value="ALL" onclick="DisplayAllFeatures()" checked><label for='ALL'> All</label><br>
-						<input type="checkbox" name="legendlist" id="Accessibility" value="Accessibility" onclick="DisplayFeatures()" ><div class="circle blue"></div><label for='Accessibility'> Accessibility</label><br> 
-						<input type="checkbox" name="legendlist" id="Amenities" value="Amenities" onclick="DisplayFeatures()" ><div class="circle yellow"></div><label for='Amenities'> Amenity</label><br> 
-						<input type="checkbox" name="legendlist" id="Office" value="Office" onclick="DisplayFeatures()"  ><div class="circle brown"></div><label for="Office"> Office</label><br>  
-						<input type="checkbox" name="legendlist" id="POI" value="Point of interest" onclick="DisplayFeatures()" ><div class="circle aqua"></div><label for="POI"> Point of interest</label><br>
-						<input type="checkbox" name="legendlist" id="Recreation" value="Recreation" onclick="DisplayFeatures()" ><div class="circle pink"></div><label for="Recreation"> Recreation</label><br>
-						<input type="checkbox" name="legendlist" id="Security" value="Security" onclick="DisplayFeatures()" ><div class="circle red"></div><label for="Security">  Security</label><br>
-						<input type="checkbox" name="legendlist" id="SServices" value="Student services" onclick="DisplayFeatures()" ><div class="circle green"></div><label for="SServices">  Student service</label><br>
-						<input type="checkbox" name="legendlist" id="Sidewalks" value="Sidewalks" onclick="DisplayFeatures()" ><div class="line white"></div><label for="Sidewalks">  Side walk</label><br>
-						<!--<input type="checkbox" name="legendlist" id="CampusRoads" value="Campus roads" onclick="DisplayFeatures()" ><div class="line white2"></div><label for="CampusRoads">  Campus road</label><br>-->
-						<input type="checkbox" name="legendlist" id="Building" value="Building" onclick="DisplayFeatures()" ><div class="rectangle building"></div><label for="Building">  Building</label><br> 									
-						<input type="checkbox" name="legendlist" id="Parking" value="Parking" onclick="DisplayFeatures()" ><div class="rectangle parking"></div><label for="Parking">  Parking</label><br> 				
-					</div>
-				</fieldset>
+					<fieldset>
+						<legend><div class="content-title"><h2> Displayed festures</h2></div></legend>
+						<div class="checkboxOne">
+							<input type="checkbox" name="legendlist" id="ALL" value="ALL" onclick="DisplayAllFeatures()" checked><label for='ALL'> All</label><br>
+							<input type="checkbox" name="legendlist" id="Accessibility" value="Accessibility" onclick="DisplayFeatures()" ><div class="circle blue"></div><label for='Accessibility'> Accessibility</label><br> 
+							<input type="checkbox" name="legendlist" id="Amenities" value="Amenities" onclick="DisplayFeatures()" ><div class="circle yellow"></div><label for='Amenities'> Amenity</label><br> 
+							<input type="checkbox" name="legendlist" id="Office" value="Office" onclick="DisplayFeatures()"  ><div class="circle brown"></div><label for="Office"> Office</label><br>  
+							<input type="checkbox" name="legendlist" id="POI" value="Point of interest" onclick="DisplayFeatures()" ><div class="circle aqua"></div><label for="POI"> Point of interest</label><br>
+							<input type="checkbox" name="legendlist" id="Recreation" value="Recreation" onclick="DisplayFeatures()" ><div class="circle pink"></div><label for="Recreation"> Recreation</label><br>
+							<input type="checkbox" name="legendlist" id="Security" value="Security" onclick="DisplayFeatures()" ><div class="circle red"></div><label for="Security">  Security</label><br>
+							<input type="checkbox" name="legendlist" id="SServices" value="Student services" onclick="DisplayFeatures()" ><div class="circle green"></div><label for="SServices">  Student service</label><br>
+							<input type="checkbox" name="legendlist" id="Sidewalks" value="Sidewalks" onclick="DisplayFeatures()" ><div class="line white"></div><label for="Sidewalks">  Side walk</label><br>
+							<!--<input type="checkbox" name="legendlist" id="CampusRoads" value="Campus roads" onclick="DisplayFeatures()" ><div class="line white2"></div><label for="CampusRoads">  Campus road</label><br>-->
+							<input type="checkbox" name="legendlist" id="Building" value="Building" onclick="DisplayFeatures()" ><div class="rectangle building"></div><label for="Building">  Building</label><br> 									
+							<input type="checkbox" name="legendlist" id="Parking" value="Parking" onclick="DisplayFeatures()" ><div class="rectangle parking"></div><label for="Parking">  Parking</label><br> 				
+						</div>
+					</fieldset>
+				</div>
+	
+			
 			</div>
-			<!-- <div id="instruction" style="display:none">
-				<fieldset >
-				<legend><p> Instruction</p></legend>
-				<ul>
-					<li>Zoom in and out with scrollbar on the left</li>
-					<li>Toggle basemaps with 'Map' and 'Satellite' buttons</li>
-					<li>Search for features with the 'Search Map' search bar</li>
-					<li>Click checkboxes above to display groups of features</li>
-					<li>Click on any feature to display additional information</li>
-				</ul>
-				</fieldset>
-			</div>-->
 		</div>
 
 		<div class='foot-nav'> 
@@ -431,3 +445,4 @@ of Miami’s Trustees, announced that the first classroom building on the campus
 	<script type="text/javascript" src='webmap3.js'></script>
 </body>
 </html>
+

@@ -9,7 +9,7 @@ body{
 	
 }
 .back-to-top {display:none;}
-.header{ background: #FFFFFF url(images/MURegional_banner.gif) no-repeat 0 0px;  overflow: hidden;} 
+.header{  background: #FFFFFF url(images/MURegional_banner.gif) no-repeat 0 0px;  overflow: hidden;} 
 .header h1{
 	float:right;
 	font-size: 3em;
@@ -19,85 +19,62 @@ body{
 .main-content{ 
 }
 .info-panel{
-	display: block;
+	width: 25%;/*370px*/;
+	height: 705px;
 	width: 370px;
-	height: 725px;
-	overflow-y: auto;
-	overflow-x: hidden;
 }
 #info-box{
 	margin: 5px;
 	padding: 5px;
 	padding-top:0px;
 }
-#info-box p2{
-	display: block;
-	margin-bottom: 0.5em;
-}
-#info-box img{
-	clear: both;
-	display: block;
-	margin-right:0.5em;
-}
-#info-box p{
-	clear: both;
-	float:left;
-}
 .description{
-	float:right;
-	width: auto;/*76%;*/	
-	max-width: 654px;*/
+	width: 75%;/*auto;76%;*/
+	max-width: 654px;
 	height: auto;
 	position: absolute;
 	left: 370px;
 	right:0px;
+	height: 100%;
 }
 #map_canvas{
-	height: 725px;
+	width: 100%;
+	height: 705px;
 }
 #float-label{
 	display: inline-block;
 	position: absolute;
 	width: auto;
 	max-width: 180px;
-	margin-top:-715px;
+	margin-top:-695px;
 	margin-left: 35px;
 	padding: 0.5em;
 	-webkit--radius: 0px 10px 10px 10px;
 	-moz--radius: 0px 10px 10px 10px;
 	border-radius: 0px 10px 10px 10px;
 	box-shadow: 10px 10px 5px #888888;
+	background-color:rgba(255,255,255, 0.8);
 }
 #feature-label{
 	top: 10px;
 	left: 15px;	
 	font-size: 1.2em;
-	text-align: left;	
+	text-align: left;
+	
 }
 #credit{
 	display: inline-block;
 	position: absolute;
 	padding-bottom:5px;
 	padding-top: 5px;
-	/*padding-left: 0.3em;
-	padding-right: 0.3em;
-	margin-right: 0px;*/
 	width: 100%;
-	/*border:dashed;
-	margin-top:-2.2em;*/
-	margin-top: -28px;
-	height: 18px;	
-}
-#credit p1{
-	margin-left: 5px;
-	font-size: 0.9em; 	
-	line-height: 1.0em;
-	font-family:open sans;
-	text-align: left;
+	/*margin-top:-2.2em;*/
+	margin-top: -25px;
+	height: 15px;
 }
 #HelpTab{
 	position: absolute;
-    top: 675px; 
+    top: 655px; 
 	width: auto;
 	margin:0em; 
 	padding: 5px;    
@@ -132,7 +109,7 @@ body{
     -moz-transition: height 2s; /* Firefox 4 */
     -webkit-transition: height 2s; /* Safari and Chrome */
     -o-transition: height 2s; /* Opera */ 
-	background-color:rgba(219,200,200, 0.8);
+}	background-color:rgba(219,200,200, 0.8);
 	-webkit--radius: 0px 10px 10px 10px;
 	-moz--radius: 0px 10px 10px 10px;
 	border-radius: 0px 10px 10px 10px;
@@ -140,9 +117,6 @@ body{
 	/*filter: dropshadow(color=#333, offx=5px, offy=5px);
 	box-shadow: 10px 10px 5px #888888;*/
  }
-#story{
-	display:none;
-}
 .buttongroup{ 
 	position: absolute;
 	background:#990000;
@@ -157,15 +131,7 @@ body{
 	padding: 0.5em; 
 	box-shadow: 10px 10px 5px #888888;
 }
-#btnRoadMap{display:none;}
-#btnSateMap{display:none; }
-#btnBaseMap{
-	/*margin-left: 5px;*/
-	padding: 0.1em;
-}
-#btnMyLocation{
-	padding: 0.1em;	
-}
+#btnBaseMap{display:none}
 .dropdownlist{
 	display:none;
 }
@@ -178,10 +144,12 @@ body{
 	right: 15px;
 	box-shadow: 10px 10px 5px #888888;
 }
+
 fieldset {
 	margin: 5px 0 0 0;
 }
 .content-title{
+	background-color: #990000;
 	background-color: #990000;
 	-webkit--radius: 5px;
 	-moz--radius: 5px;
@@ -208,6 +176,7 @@ fieldset {
     height: 8px;
     width: 12px;
 }
+
 /*
 #instruction{
 	padding: 0em 0.5em 0.5em 0.5em;
@@ -226,8 +195,7 @@ ul{
 	height: auto;
 }
 .foot-nav{
-	border-top: 1px solid #EDECE6;
-	margin-bottom: 1px;
+	border-top: 1px solid #484891;
 }
 .foot-nav a{color: #DB6D16; font-size:1.2em} 
 
