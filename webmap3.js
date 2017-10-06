@@ -172,9 +172,10 @@ function btnQuery_OnClick()
 		alert("Please input a valid name")
 		return false;
 	}*/
-
 	var features= document.getElementsByName('legendlist');
-	for (i=0; i< features.length; i++){features[i].checked= false};
+	if (!features[0].checked) {
+		for (i=0; i< features.length; i++){features[i].checked= false};
+	}
 	map.data.forEach(function(feature) {
 		var title = feature.getProperty('Title');
 		var name=feature.getProperty('Name');
@@ -182,7 +183,7 @@ function btnQuery_OnClick()
 		var name_low = String(name).toLowerCase();
 
 		if ((title_low.indexOf(keyword2)> -1)|(name_low.indexOf(keyword2)> -1)){ //"'Title' CONTAINS IGNORING CASE '"
-			//feature.setProperty('Display',true);
+			feature.setProperty('Display',true);
 			if (title){message = title} else {message = name};
 			map.data.overrideStyle(feature,{ //highlight the queried feature
 				icon: {				
@@ -198,14 +199,52 @@ function btnQuery_OnClick()
 				strokeColor:'yellow',
 				strokeWeight: 3
 			});
-
-			if (feature.getGeometry().getLength()< 2){
+			
+			/*if (feature.getGeometry().getLength()< 2){
 				Qcenter= feature.getGeometry().getAt(0); 
 				if (Qcenter instanceof google.maps.LatLng){ //single point
-					//alert('single point')
+					alert('single point')
 				}
 				else {
 					Qcenter=Qcenter.getAt(0);//single feature with multiple coordinates
+					if (Qcenter instanceof google.maps.LatLng){ 
+						alert('single feature with multiple coordinates')
+					}
+					else{ //single Multi-feature with multiple coordinates
+						Qcenter=feature.getGeometry().getAt(0).getArray();
+						Qcenter=Qcenter[0].getAt(0);
+						alert('single Multi-feature with multiple coordinates');
+					};
+				};
+			}
+			else{
+				//alert('option 2');	
+				Qcenter= feature.getGeometry().getArray();//multiple features with multiple coordinates
+				Qcenter=Qcenter[0];
+				if (Qcenter instanceof google.maps.LatLng){alert('multiple features with multiple coordinates')};
+			};*/
+
+			if (feature.getGeometry().getType()==='Point'){//get the latlng of the point
+				Qcenter= feature.getGeometry().get();
+				//if (Qcenter instanceof google.maps.LatLng){alert('valid point latlong')};
+			}
+			else{
+				/*len=feature.getGeometry().getLength();
+				//alert(len);
+				//if (feature.getGeometry().getLength()> 1)
+				Qcenter= feature.getGeometry().getAt(0);//get the latlng of the point
+				//Qcenter=Qcenter[0].getAt(0);
+				if (Qcenter instanceof google.maps.LatLng){alert('valid getAt0')};
+				if (feature.getGeometry().getType()==='LineString') {
+					Qcenter=Qlatlng[0].getAg
+					if (Qcenter instanceof google.maps.LatLng){alert('valid line latlong')};
+				}
+				else{
+				
+				}*/
+				if (feature.getGeometry().getLength()<2) {
+                    Qcenter=feature.getGeometry().getAt(0);//single feature with multiple coordinates
+					Qcenter=Qcenter.getAt(0);
 					if (Qcenter instanceof google.maps.LatLng){ 
 						//alert('single feature with multiple coordinates')
 					}
@@ -214,34 +253,15 @@ function btnQuery_OnClick()
 						Qcenter=Qcenter[0].getAt(0);
 						//alert('single Multi-feature with multiple coordinates');
 					};
-				};
-			}
-			else{
-				//alert('option 2');	
-				Qcenter= feature.getGeometry().getArray();//multiple features with multiple coordinates
-				Qcenter=Qcenter[0];
-				//if (Qcenter instanceof google.maps.LatLng){alert('multiple features with multiple coordinates')};
-			};
-			/*if (feature.getGeometry().getType()==='Point'){//get the latlng of the point
-				Qcenter= feature.getGeometry().get();
-				if (Qcenter instanceof google.maps.LatLng){alert('valid latlong')};
-			}
-			else{
-				len=feature.getGeometry().getLength();
-				alert(len);
-				//if (feature.getGeometry().getLength()> 1)
-				Qcenter= feature.getGeometry().getAt(0);//get the latlng of the point
-				//Qcenter=Qcenter[0].getAt(0);
-				if (Qcenter instanceof google.maps.LatLng){alert('valid getAt0')};
-				if (feature.getGeometry().getType()==='LineString') {
-					Qcenter=Qlatlng[0].getAg
-					if (Qcenter instanceof google.maps.LatLng){alert('valid latlong')};
-				}
+                }
 				else{
-				
+					Qcenter= feature.getGeometry().getArray();//multiple features with multiple coordinates
+					Qcenter=Qcenter[0];
+					//if (Qcenter instanceof google.maps.LatLng){alert('multiple features with multiple coordinates')};					
 				}
-			};*/
-
+				
+			}
+			//alert(feature.getProperty('Type'));
 			for (i=0; i< features.length; i++){
 				if (features[i].value == feature.getProperty('Type')){
 					features[i].checked = true;
@@ -250,6 +270,7 @@ function btnQuery_OnClick()
 			}
 			
 		}
+		else{feature.setProperty('Display',false);}
 	})
 	map.setCenter(Qcenter);
 	/*var marker = new google.maps.Marker({
